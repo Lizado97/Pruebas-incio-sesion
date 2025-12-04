@@ -15,7 +15,6 @@
         body { font-family: sans-serif; background-color: #f0f2f5; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .btn-secondary { background-color: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
-        /* ... Más estilos de dashboard ... */
     </style>
 </head>
 <body>
@@ -36,44 +35,29 @@
         
         <div style="padding: 20px;">
             <h2>¡Bienvenido al Dashboard Protegido!</h2>
-            <p>Contenido visible solo si estás logueado.</p>
+            <p>Contenido visible solo si estás logueado. Si no ves esto, serás redirigido.</p>
         </div>
         
     </div>
 
     <script>
-
-        //Este es el código clave que maneja la transición:
-
-auth.onAuthStateChanged((user) => {
-    // 1. Esto debe ejecutarse primero para quitar la pantalla de "Verificando"
-    document.getElementById('loading-screen').style.display = 'none'; 
-
-    if (user) {
-        // 2. Si hay usuario, muestra el contenido de la aplicación
-        document.getElementById('main-app-content').style.display = 'block';
-    } else {
-        // 3. Si NO hay usuario, te manda a login.html
-        window.location.href = "login.html"; 
-    }
-});
-        // 1. Proteger la Página
+        // 1. Lógica de Protección (Debe ejecutarse después de la carga de auth)
         auth.onAuthStateChanged((user) => {
             document.getElementById('loading-screen').style.display = 'none';
 
             if (user) {
                 // Usuario logueado: Mostrar dashboard
                 document.getElementById('main-app-content').style.display = 'block';
-                // Aquí deberías llamar a cargarPresupuestos() si lo tienes
             } else {
                 // Usuario NO logueado: Redirigir a login.html
+                console.log("No hay usuario. Redirigiendo a login.html");
                 window.location.href = "login.html"; 
             }
         });
         
         // 2. Lógica de Cierre de Sesión
         document.getElementById('logoutButton').addEventListener('click', () => {
-            auth.signOut(); // Esto activa el onAuthStateChanged, que luego redirige
+            auth.signOut(); 
         });
     </script>
 </body>
