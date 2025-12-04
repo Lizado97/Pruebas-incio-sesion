@@ -1,9 +1,32 @@
     <!DOCTYPE html>
 <html lang="es">
-<head>
+<head>    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canotex - Sistema de Presupuestos de Cortinas</title>
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyCMDdNr6wB6gZe00olBid3oi-c9FuLR27c",
+    authDomain: "loguin-f1921.firebaseapp.com",
+    projectId: "loguin-f1921",
+    storageBucket: "loguin-f1921.firebasestorage.app",
+    messagingSenderId: "726207211540",
+    appId: "1:726207211540:web:395370c11e864151301f01",
+    measurementId: "G-D4HF5PVS64"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
     <style>
         * {
             margin: 0;
@@ -478,6 +501,9 @@
     </style>
 </head>
 <body>
+    <div id="loading-screen" style="text-align: center; padding-top: 50vh;">
+        Cargando y verificando sesión...
+    </div>
     <div class="container">
         <!-- Vista Dashboard -->
         <div id="dashboard-view">
@@ -488,6 +514,9 @@
                 </div>
                 <button class="btn btn-primary" onclick="mostrarVista('nuevo')">
                     ➕ Nuevo Presupuesto
+                </button>
+                <button class="btn btn-secondary" id="logoutButton">
+                        🚪 Salir
                 </button>
             </div>
 
@@ -530,7 +559,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        
 
         <!-- Vista Nuevo Presupuesto -->
         <div id="nuevo-view" class="hidden">
@@ -739,7 +768,7 @@
             <div class="card" id="detalle-content"></div>
         </div>
     </div>
-
+<script src="auth-handler.js"></script>
     <script>
             const TEJIDOS = [
             { nombre: "AALBORG 60-61-64", precio: 57.68, ancho: 300, composicion: "53% Pes 47% Li" },
