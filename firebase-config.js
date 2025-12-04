@@ -19,3 +19,5 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const auth = firebase.auth();
+const db = firebase.firestore(); // Incluido por si quieres usar Firestore para los presupuestos
