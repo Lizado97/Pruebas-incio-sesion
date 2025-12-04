@@ -1,45 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canotex - Dashboard</title>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
+    
     <script src="firebase-config.js"></script> 
     
-    <title>Canotex - Dashboard</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f2f5; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-secondary { background-color: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
+        /* ... Más estilos de dashboard ... */
+    </style>
 </head>
 <body>
-    <div id="loading-screen">Verificando sesión...</div>
+    
+    <div id="loading-screen" style="text-align: center; padding-top: 50vh;">Verificando sesión...</div>
 
     <div class="container" id="main-app-content" style="display: none;">
-        <div id="dashboard-view">
-            <h1>... Tu Dashboard ...</h1>
-            <button id="logoutButton">Cerrar Sesión</button>
+        
+        <div class="header">
+            <div>
+                <h1>🪟 Canotex - Sistema de Presupuestos</h1>
+                <p style="color: #64748b; margin-top: 0.5rem;">Gestión de presupuestos de cortinas</p>
             </div>
+            <button class="btn btn-secondary" id="logoutButton">
+                🚪 Salir
+            </button>
+        </div>
+        
+        <div style="padding: 20px;">
+            <h2>¡Bienvenido al Dashboard Protegido!</h2>
+            <p>Contenido visible solo si estás logueado.</p>
+        </div>
+        
     </div>
 
     <script>
-        // Lógica de Protección:
+        // 1. Proteger la Página
         auth.onAuthStateChanged((user) => {
             document.getElementById('loading-screen').style.display = 'none';
 
             if (user) {
                 // Usuario logueado: Mostrar dashboard
                 document.getElementById('main-app-content').style.display = 'block';
-                // Aquí deberías llamar a la función cargarPresupuestos()
+                // Aquí deberías llamar a cargarPresupuestos() si lo tienes
             } else {
                 // Usuario NO logueado: Redirigir a login.html
                 window.location.href = "login.html"; 
             }
         });
         
-        // Lógica de Cierre de Sesión:
+        // 2. Lógica de Cierre de Sesión
         document.getElementById('logoutButton').addEventListener('click', () => {
-            auth.signOut(); // El onAuthStateChanged se encargará de la redirección
+            auth.signOut(); // Esto activa el onAuthStateChanged, que luego redirige
         });
-
-        // NOTA: Tu lógica para cargarPresupuestos(), mostrarVista(), etc., también debe estar aquí o enlazada.
     </script>
 </body>
 </html>
