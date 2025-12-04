@@ -1,47 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Canotex</title>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    
     <script src="firebase-config.js"></script>
     
-    <title>Iniciar Sesión</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .login-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); width: 350px; text-align: center; }
+        h2 { color: #1e40af; margin-bottom: 20px; }
+        input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; border: none; border-radius: 4px; color: white; cursor: pointer; background-color: #3b82f6; }
+        button:hover { background-color: #2563eb; }
+        .error { color: #ef4444; margin-top: 10px; }
+    </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>Iniciar Sesión</h2>
+        <h2>🔑 Iniciar Sesión</h2>
         <form id="loginForm"> 
-            <input type="email" id="loginEmail" required>
-            <input type="password" id="loginPassword" required>
+            <input type="email" id="loginEmail" placeholder="Correo Electrónico" required>
+            <input type="password" id="loginPassword" placeholder="Contraseña" required>
             <button type="submit">Entrar</button>
-            <p id="loginError" style="color: red;"></p>
+            <p id="loginError" class="error"></p>
         </form>
-        <p>¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
+        <p>¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault(); 
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    // ÉXITO: Redirigir a la página principal
-                    window.location.href = "index.html"; 
-                })
-                .catch(error => {
-                    document.getElementById('loginError').textContent = "Error: " + error.message;
-                });
-        });
-        
-        // Opcional: Si el usuario ya está logueado, redirigirlo a index.html inmediatamente
+        // Si el usuario ya está logueado, redirigir a index.html inmediatamente
         auth.onAuthStateChanged(user => {
              if (user) {
                  window.location.href = "index.html";
              }
          });
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault(); 
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            document.getElementById('loginError').textContent = '';
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    // ÉXITO: Redirigir
+                    window.location.href = "index.html"; 
+                })
+                .catch(error => {
+                    document.getElementById('loginError').textContent = "Usuario o contraseña incorrectos.";
+                    console.error("Login error:", error);
+                });
+        });
     </script>
 </body>
 </html>
