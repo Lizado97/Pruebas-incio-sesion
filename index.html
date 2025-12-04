@@ -42,6 +42,21 @@
     </div>
 
     <script>
+
+        //Este es el código clave que maneja la transición:
+
+auth.onAuthStateChanged((user) => {
+    // 1. Esto debe ejecutarse primero para quitar la pantalla de "Verificando"
+    document.getElementById('loading-screen').style.display = 'none'; 
+
+    if (user) {
+        // 2. Si hay usuario, muestra el contenido de la aplicación
+        document.getElementById('main-app-content').style.display = 'block';
+    } else {
+        // 3. Si NO hay usuario, te manda a login.html
+        window.location.href = "login.html"; 
+    }
+});
         // 1. Proteger la Página
         auth.onAuthStateChanged((user) => {
             document.getElementById('loading-screen').style.display = 'none';
