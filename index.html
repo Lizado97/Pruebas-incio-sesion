@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script src="firebase-config.js"></script> 
+    
+    <title>Canotex - Dashboard</title>
+</head>
+<body>
+    <div id="loading-screen">Verificando sesión...</div>
+
+    <div class="container" id="main-app-content" style="display: none;">
+        <div id="dashboard-view">
+            <h1>... Tu Dashboard ...</h1>
+            <button id="logoutButton">Cerrar Sesión</button>
+            </div>
+    </div>
+
+    <script>
+        // Lógica de Protección:
+        auth.onAuthStateChanged((user) => {
+            document.getElementById('loading-screen').style.display = 'none';
+
+            if (user) {
+                // Usuario logueado: Mostrar dashboard
+                document.getElementById('main-app-content').style.display = 'block';
+                // Aquí deberías llamar a la función cargarPresupuestos()
+            } else {
+                // Usuario NO logueado: Redirigir a login.html
+                window.location.href = "login.html"; 
+            }
+        });
+        
+        // Lógica de Cierre de Sesión:
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            auth.signOut(); // El onAuthStateChanged se encargará de la redirección
+        });
+
+        // NOTA: Tu lógica para cargarPresupuestos(), mostrarVista(), etc., también debe estar aquí o enlazada.
+    </script>
+</body>
+</html>
