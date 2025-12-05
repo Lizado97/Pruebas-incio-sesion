@@ -1,18 +1,19 @@
-    <!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Presupuestos de Cortinas</title>
-   
-      <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    
     <script src="firebase-config.js"></script> 
     
-    
-      <style>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -20,19 +21,13 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            font-family: 'Poppins', sans-serif;
+            /* Fondo oscuro con degradado */
+            background: #141e30;
+            background-image: linear-gradient(135deg, #141e30 0%, #243b55 100%);
             min-height: 100vh;
+            color: #f0f4f8; /* Color de texto base claro */
         }
-       .btn-secondary { 
-        background-color: #ef4444; 
-        color: white; 
-        border: none; 
-        padding: 10px 15px; 
-        border-radius: 4px; 
-        cursor: pointer; 
-    }
- 
 
         .container {
             max-width: 1400px;
@@ -40,731 +35,474 @@
             padding: 2rem;
         }
 
-        .header {
-            background: white;
+        /* Glassmorphism para la cabecera y tarjetas */
+        .header, .card {
+            background: rgba(255, 255, 255, 0.05); /* Fondo semitransparente */
+            backdrop-filter: blur(10px); /* Efecto borroso */
+            border-radius: 20px; /* Bordes más redondeados */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
+        }
+
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .header h1 {
-            color: #1e293b;
+            color: #fff;
             font-size: 2rem;
+            font-weight: 700;
         }
 
+        .header p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .card h2, .step-title, .item-info h4 {
+            color: #fff;
+        }
+
+        /* Estilo de Botones */
         .btn {
             padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            font-weight: 600;
         }
 
         .btn-primary {
-            background: #2563eb;
+            /* Degradado azul moderno */
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
             color: white;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
         }
 
         .btn-primary:hover {
-            background: #1d4ed8;
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
         }
 
         .btn-secondary {
-            background: #64748b;
+            background: #475569;
             color: white;
         }
 
         .btn-secondary:hover {
-            background: #475569;
+            background: #334155;
         }
-
-        .btn-danger {
+        
+        /* Botón de Salir (Rojo) */
+        #logoutButton {
             background: #ef4444;
             color: white;
         }
+        #logoutButton:hover {
+            background: #dc2626;
+        }
 
         .card {
-            background: white;
             padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-
-        .card h2 {
-            color: #1e293b;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
         }
 
         .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #475569;
-            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
         }
 
+        /* Inputs y Selects */
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
             padding: 0.75rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08); /* Fondo de input semi-transparente */
+            border-radius: 8px;
             font-size: 1rem;
+            color: #fff; /* Texto blanco en el input */
             transition: border 0.3s;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+            border-color: #00c6ff;
+            box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.2);
         }
 
-        .grid {
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .grid-2 {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .item-list {
-            margin-top: 1rem;
-        }
-
-        .item {
-            background: #f8fafc;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #e2e8f0;
-        }
-
-        .item-info {
-            flex: 1;
-        }
-
-        .item-info h4 {
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
-
-        .item-info p {
-            color: #64748b;
-            font-size: 0.875rem;
-        }
-
-        .item-price {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #2563eb;
-            margin-right: 1rem;
-        }
-
-        .resumen {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 12px;
-            position: sticky;
-            top: 2rem;
-        }
-
-        .resumen h3 {
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        .resumen-linea {
-            display: flex;
-            justify-content: space-between;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .resumen-total {
-            font-size: 1.75rem;
-            font-weight: bold;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 2px solid rgba(255,255,255,0.3);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .tabla {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .tabla thead {
-            background: #f8fafc;
-        }
-
-        .tabla th {
-            padding: 1rem;
-            text-align: left;
-            color: #475569;
-            font-weight: 600;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .tabla td {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            color: #1e293b;
-        }
-
-        .tabla tbody tr:hover {
-            background: #f8fafc;
-            cursor: pointer;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .badge-borrador {
-            background: #e2e8f0;
-            color: #475569;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .stat-card h3 {
-            font-size: 0.875rem;
-            opacity: 0.9;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card .value {
-            font-size: 2rem;
-            font-weight: bold;
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: white;
-            border-radius: 8px;
-            margin-top: 1rem;
-            border: 1px solid #e2e8f0;
-        }
-
-        .checkbox-container input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .checkbox-container label {
-            cursor: pointer;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-top: 0.5rem;
-        }
-
-        .search-result-item {
-            padding: 1rem;
-            cursor: pointer;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .search-result-item:hover {
-            background: #f8fafc;
-        }
-
-        .search-result-item:last-child {
-            border-bottom: none;
-        }
-
-        .aviso-orientativo {
-            background: #fef3c7;
-            border: 2px solid #fbbf24;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .aviso-orientativo strong {
-            color: #92400e;
-            font-size: 0.875rem;
-            display: block;
-        }
-
-        .aviso-orientativo p {
-            color: #78716c;
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
-        }
-
-        .tabla-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
+        /* Estilos de Pasos (Step-Box) */
         .step-box {
             padding: 1.5rem;
             border-radius: 12px;
             border: 2px solid;
             margin-bottom: 1.5rem;
         }
-
         .step-blue {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            background: rgba(255, 255, 255, 0.05); /* Fondo de Glassmorphism para los pasos */
             border-color: #3b82f6;
         }
-
-        .step-purple {
-            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-            border-color: #a855f7;
-        }
-
-        .step-amber {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-color: #f59e0b;
-        }
-
-        .step-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .step-number {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-
         .step-blue .step-number {
             background: #2563eb;
         }
 
-        .step-purple .step-number {
-            background: #9333ea;
+        /* Lista de Items */
+        .item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .step-amber .step-number {
-            background: #f59e0b;
+        .item-info p {
+            color: rgba(255, 255, 255, 0.6);
         }
 
-        .step-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #1e293b;
+        .item-price {
+            color: #10b981; /* Verde brillante para el precio */
         }
 
+        /* Resumen (Sticky) */
+        .resumen {
+            /* Degradado más profundo */
+            background: linear-gradient(135deg, #1d4ed8 0%, #0072ff 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            position: sticky;
+            top: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+        .resumen-linea {
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+        .resumen-total {
+            border-top: 2px solid rgba(255,255,255,0.5);
+        }
+        
+        /* Stats Cards */
+        .stats {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .stat-card {
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Colores de las tarjetas de stats */
+        .stat-card:nth-child(1) { /* Total Presupuestos */
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); 
+        }
+        .stat-card:nth-child(2) { /* Importe Total */
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .stat-card:nth-child(3) { /* Este Mes */
+             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        /* Tabla */
+        .tabla thead {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .tabla th {
+            color: rgba(255, 255, 255, 0.7);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        .tabla td {
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tabla tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Resultados de búsqueda */
+        .search-results {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+        .search-result-item:hover {
+            background: #2d3846;
+        }
+        .search-result-item {
+            border-bottom: 1px solid #334155;
+        }
+
+        /* Media Queries (Ajuste para móviles en modo oscuro) */
         @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .header {
+             .header {
                 flex-direction: column;
                 gap: 1rem;
-                padding: 1.25rem;
                 align-items: stretch;
             }
-
-            .header h1 {
-                font-size: 1.25rem;
-            }
-
-            .btn {
-                padding: 0.625rem 1rem;
-                font-size: 0.875rem;
-                justify-content: center;
-                width: 100%;
-            }
-
-            .card {
-                padding: 1.25rem;
-            }
-
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-
             .stats {
                 grid-template-columns: 1fr;
             }
-
-            .resumen {
-                position: static;
-                margin-top: 1rem;
-            }
-
-            .item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-            }
-
-            .item-price {
-                align-self: flex-end;
-                margin-right: 0;
-            }
         }
 
+        /* Estilos de Impresión (se mantienen claros) */
         @media print {
-            body {
-                background: white;
-            }
-            
-            .btn, .hidden-print {
-                display: none !important;
-            }
-
-            .card {
-                box-shadow: none;
-                border: 1px solid #e2e8f0;
-            }
+            body { background: white; color: #1e293b; }
+            .btn, .hidden-print { display: none !important; }
+            .card, .resumen { box-shadow: none; border: 1px solid #e2e8f0; background: white; color: #1e293b; }
+            .tabla th { color: #475569; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
+            .tabla td { color: #1e293b; }
         }
     </style>
 </head>
 <body>
-  <div id="loading-screen" style="text-align: center; padding-top: 50vh;">Verificando sesión...</div>
-    <div class="container">
-        <!-- Vista Dashboard -->
-   
-      
-        <div id="dashboard-view">
-            <div class="header">
-                <div>
-                    <h1>🪟 Canotex - Sistema de Presupuestos</h1>
-                    <p style="color: #64748b; margin-top: 0.5rem;">Gestión de presupuestos de cortinas</p>
-                </div>
+<div id="loading-screen" style="text-align: center; padding-top: 50vh; color: white;">Verificando sesión...</div>
+
+<div class="container">
+    <div id="dashboard-view">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-magic" style="color:#00c6ff;"></i> Canotex - Sistema de Presupuestos</h1>
+                <p style="margin-top: 0.5rem;">Gestión de presupuestos de cortinas</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
                 <button class="btn btn-primary" onclick="mostrarVista('nuevo')">
-                    ➕ Nuevo Presupuesto
+                    <i class="fas fa-plus"></i> Nuevo Presupuesto
                 </button>
-                 <button class="btn btn-secondary" id="logoutButton">
-                🚪 Salir
-            </button>
-        </div>
-            
-
-            <div class="stats">
-                <div class="stat-card">
-                    <h3>Total Presupuestos</h3>
-                    <div class="value" id="total-presupuestos">0</div>
-                </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                    <h3>Importe Total</h3>
-                    <div class="value" id="total-importe">0€</div>
-                </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
-                    <h3>Este Mes</h3>
-                    <div class="value" id="total-mes">0</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Presupuestos Recientes</h2>
-                <div class="tabla-wrapper">
-                    <table class="tabla" id="tabla-presupuestos">
-                        <thead>
-                            <tr>
-                                <th>Número</th>
-                                <th>Cliente</th>
-                                <th>Fecha</th>
-                                <th>Items</th>
-                                <th style="text-align: right;">Total</th>
-                                <th style="text-align: center;">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="6" style="text-align: center; padding: 3rem; color: #64748b;">
-                                    No hay presupuestos. ¡Crea el primero!
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <button class="btn btn-secondary" id="logoutButton">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
             </div>
         </div>
-</div>
-</div>
-        <!-- Vista Nuevo Presupuesto -->
-        <div id="nuevo-view" class="hidden">
-            <div class="header">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <button class="btn btn-secondary" onclick="mostrarVista('dashboard')">
-                        ← Volver
-                    </button>
-                    <h1>Nuevo Presupuesto</h1>
-                </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Presupuestos</h3>
+                <div class="value" id="total-presupuestos">0</div>
             </div>
+            <div class="stat-card">
+                <h3>Importe Total</h3>
+                <div class="value" id="total-importe">0€</div>
+            </div>
+            <div class="stat-card">
+                <h3>Este Mes</h3>
+                <div class="value" id="total-mes">0</div>
+            </div>
+        </div>
 
-            <div class="grid grid-2">
-                <div>
-                    <div class="card">
-                        <h2>Datos del Cliente</h2>
+        <div class="card">
+            <h2>Presupuestos Recientes</h2>
+            <div class="tabla-wrapper">
+                <table class="tabla" id="tabla-presupuestos">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Items</th>
+                            <th style="text-align: right;">Total</th>
+                            <th style="text-align: center;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 3rem; color: rgba(255, 255, 255, 0.6);">
+                                No hay presupuestos. ¡Crea el primero!
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div id="nuevo-view" class="hidden">
+        <div class="header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="btn btn-secondary" onclick="mostrarVista('dashboard')">
+                    ← Volver
+                </button>
+                <h1>Crear Nuevo Presupuesto</h1>
+            </div>
+        </div>
+
+        <div class="grid grid-2">
+            <div>
+                <div class="card">
+                    <h2>Datos del Cliente</h2>
+                    <div class="form-group">
+                        <label>Nombre del Cliente *</label>
+                        <input type="text" id="cliente-nombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="grid grid-2">
                         <div class="form-group">
-                            <label>Nombre del Cliente *</label>
-                            <input type="text" id="cliente-nombre" placeholder="Nombre completo">
+                            <label>Teléfono</label>
+                            <input type="tel" id="cliente-telefono" placeholder="+34 600 000 000">
                         </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="cliente-email" placeholder="cliente@email.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <input type="text" id="cliente-direccion" placeholder="Calle, número, ciudad">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>🧮 Calculadora de Cortinas</h2>
+                    
+                    <div class="step-box step-blue">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Tipo y Tejido</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tipo de Cortina *</label>
+                            <select id="tipo-cortina">
+                                <option value="">Selecciona el tipo...</option>
+                                <option value="estor_paquetto">Estor Paquetto (sin varillas)</option>
+                                <option value="cortina_onda_perfecta">Cortina Onda Perfecta</option>
+                                </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tejido * <small>(Buscar por nombre)</small></label>
+                            <div class="search-box">
+                                <input type="text" id="tejido-search" placeholder="Buscar tejido..." oninput="buscarTejido()">
+                                <div id="search-results" class="search-results hidden"></div>
+                            </div>
+                            <input type="hidden" id="tejido">
+                        </div>
+                    </div>
+
+                    <div class="step-box step-blue">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">📏 Medidas</div>
+                        </div>
+                        
                         <div class="grid grid-2">
                             <div class="form-group">
-                                <label>Teléfono</label>
-                                <input type="tel" id="cliente-telefono" placeholder="+34 600 000 000">
+                                <label>Ancho (cm) *</label>
+                                <input type="number" id="ancho" placeholder="200">
                             </div>
                             <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="cliente-email" placeholder="cliente@email.com">
+                                <label>Alto (cm) *</label>
+                                <input type="number" id="alto" placeholder="280">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Dirección</label>
-                            <input type="text" id="cliente-direccion" placeholder="Calle, número, ciudad">
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h2>🧮 Calculadora de Cortinas</h2>
                         
-                        <!-- Sección 1: Tipo y Tejido -->
-                        <div class="step-box step-blue">
-                            <div class="step-header">
-                                <div class="step-number">1</div>
-                                <div class="step-title">Tipo y Tejido</div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Tipo de Cortina *</label>
-                                <select id="tipo-cortina">
-                                    <option value="">Selecciona el tipo...</option>
-                                    <option value="estor_paquetto">Estor Paquetto (sin varillas)</option>
-                                    <option value="estor_plegable">Estor Plegable (con varillas)</option>
-                                    <option value="cortina_onda_perfecta">Cortina Onda Perfecta</option>
-                                    <option value="cortina_fruncida">Cortina Fruncida</option>
-                                    <option value="cortina_plana">Cortina Plana sin Frunce</option>
-                                    <option value="cortina_ollados">Cortina con Ollados</option>
-                                    <option value="cortina_triple_pliegue">Cortina Triple Pliegue</option>
-                                    <option value="cortina_palas">Cortina Palas</option>
-                                    <option value="cortina_plana_doble">Cortina Plana Doble Tejido</option>
-                                    <option value="cortina_plegones">Cortina Plegones</option>
-
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Tejido * <small>(Buscar por nombre)</small></label>
-                                <div class="search-box">
-                                    <input type="text" id="tejido-search" placeholder="Buscar tejido..." oninput="buscarTejido()">
-                                    <div id="search-results" class="search-results hidden"></div>
-                                </div>
-                                <input type="hidden" id="tejido">
-                            </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="dos-piezas">
+                            <label for="dos-piezas">✂️ Dividir en 2 piezas</label>
                         </div>
-
-                        <!-- Sección 2: Medidas -->
-                        <div class="step-box step-blue">
-                            <div class="step-header">
-                                <div class="step-number">2</div>
-                                <div class="step-title">📏 Medidas</div>
-                            </div>
-                            
-                            <div class="grid grid-2">
-                                <div class="form-group">
-                                    <label>Ancho (cm) *</label>
-                                    <input type="number" id="ancho" placeholder="200">
-                                </div>
-                                <div class="form-group">
-                                    <label>Alto (cm) *</label>
-                                    <input type="number" id="alto" placeholder="280">
-                                </div>
-                            </div>
-                            
-                            <div class="checkbox-container">
-                                <input type="checkbox" id="dos-piezas">
-                                <label for="dos-piezas">✂️ Dividir en 2 piezas</label>
-                            </div>
-                        </div>
-
-                        <!-- Sección 3: Sistema -->
-                     <div class="step-box step-blue">
-                            <div class="step-header">
-                                <div class="step-number">3</div>
-                                <div class="step-title">Sistema de Instalación</div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Sistema (opcional)</label>
-                               <select id="sistema" onchange="mostrarOpcionesBarras()">
-                                    <option value="">Sin sistema</option>
-                                    <option value="barras">Barras</option>
-                                </select>
-                            </div>
-                          <!-- Opciones adicionales para barras -->
-                            <div id="opciones-barras" style="display: none;">
-                                <div class="form-group" id="diametro-container">
-                                    <label>Diámetro</label>
-                                    <select id="diametro-barra">
-                                        <option value="">Selecciona...</option>
-                                        <option value="20">20mm</option>
-                                        <option value="28">28mm</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Medida</label>
-                                    <select id="medida-barra">
-                                        <option value="">Selecciona...</option>
-                                        <option value="150">150cm</option>
-                                        <option value="200">200cm</option>
-                                        <option value="250">250cm</option>
-                                        <option value="300">300cm</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="checkbox-container">
-                                <input type="checkbox" id="incluir-instalacion" onchange="actualizarResumen()">
-                                <label for="incluir-instalacion">🔧 Incluir instalación</label>
-                            </div>
-
-                            </div>
-                           
-                           <button class="btn btn-primary" onclick="agregarItem()" style="width: 100%; padding: 1rem; background: #22c55e; color: white;">
-                            <span id="btn-texto">➕ </span>
-                            </button>
                     </div>
 
-                    <div class="card" id="items-card" style="display: none;">
-                        <h2>Items del Presupuesto</h2>
-                        <div class="item-list" id="items-list"></div>
-                    </div>
-
-                    <div class="card">
-                        <h2>Notas Adicionales</h2>
+                    <div class="step-box step-blue">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Sistema de Instalación</div>
+                        </div>
+                        
                         <div class="form-group">
-                            <textarea id="notas" rows="4" placeholder="Añade cualquier información adicional..."></textarea>
+                            <label>Sistema (opcional)</label>
+                            <select id="sistema" onchange="mostrarOpcionesBarras()">
+                                <option value="">Sin sistema</option>
+                                <option value="barras">Barras</option>
+                            </select>
                         </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="resumen">
-                        <h3>📦 Resumen del Presupuesto</h3>
-                        <div class="resumen-linea">
-                            <span>Total Items:</span>
-                            <span id="total-items">0</span>
-                        </div>
-                        <div class="resumen-linea">
-                            <span>Subtotal (sin IVA):</span>
-                            <span id="subtotal">0.00€</span>
-                        </div>
-                        <div class="resumen-linea" id="instalacion-line" style="display: none;">
-                            <span>Instalación:</span>
-                            <span id="instalacion-precio">0.00€</span>
-                        </div>
-                        <div class="resumen-linea">
-                            <span>IVA (21%):</span>
-                            <span id="iva">0.00€</span>
-                        </div>
-                        <div class="resumen-total">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>TOTAL:</span>
-                                <span id="total">0.00€</span>
+                        
+                        <div id="opciones-barras" style="display: none;">
+                            <div class="form-group" id="diametro-container">
+                                <label>Diámetro</label>
+                                <select id="diametro-barra">
+                                    <option value="">Selecciona...</option>
+                                    <option value="20">20mm</option>
+                                    <option value="28">28mm</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Medida</label>
+                                <select id="medida-barra">
+                                    <option value="">Selecciona...</option>
+                                    <option value="150">150cm</option>
+                                    </select>
                             </div>
                         </div>
-                        <button class="btn" onclick="guardarPresupuesto()" style="width: 100%; background: white; color: #2563eb; margin-top: 2rem; font-weight: bold;">
-                            💾 Guardar Presupuesto
-                        </button>
+                        <div class="checkbox-container" style="background: rgba(255, 255, 255, 0.08); border: none;">
+                            <input type="checkbox" id="incluir-instalacion" onchange="actualizarResumen()">
+                            <label for="incluir-instalacion">🔧 Incluir instalación</label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="agregarItem()" style="width: 100%; padding: 1rem; background: linear-gradient(90deg, #10b981, #059669); color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+                        <span id="btn-texto"><i class="fas fa-plus-circle"></i> Agregar Ítem al Presupuesto</span>
+                    </button>
+                </div>
+
+                <div class="card" id="items-card" style="display: none;">
+                    <h2>Items del Presupuesto</h2>
+                    <div class="item-list" id="items-list"></div>
+                </div>
+
+                <div class="card">
+                    <h2>Notas Adicionales</h2>
+                    <div class="form-group">
+                        <textarea id="notas" rows="4" placeholder="Añade cualquier información adicional..."></textarea>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Vista Detalle Presupuesto -->
-        <div id="detalle-view" class="hidden">
-            <div class="header hidden-print">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <button class="btn btn-secondary" onclick="mostrarVista('dashboard')">
-                        ← Volver
+            <div>
+                <div class="resumen">
+                    <h3>📦 Resumen del Presupuesto</h3>
+                    <div class="resumen-linea">
+                        <span>Total Items:</span>
+                        <span id="total-items">0</span>
+                    </div>
+                    <div class="resumen-linea">
+                        <span>Subtotal (sin IVA):</span>
+                        <span id="subtotal">0.00€</span>
+                    </div>
+                    <div class="resumen-linea" id="instalacion-line" style="display: none;">
+                        <span>Instalación:</span>
+                        <span id="instalacion-precio">0.00€</span>
+                    </div>
+                    <div class="resumen-linea">
+                        <span>IVA (21%):</span>
+                        <span id="iva">0.00€</span>
+                    </div>
+                    <div class="resumen-total">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>TOTAL:</span>
+                            <span id="total">0.00€</span>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="guardarPresupuesto()" style="width: 100%; background: white; color: #2563eb; margin-top: 2rem; font-weight: bold;">
+                        <i class="fas fa-save"></i> Guardar Presupuesto
                     </button>
-                    <h1>Detalle del Presupuesto</h1>
                 </div>
-                <button class="btn btn-primary" onclick="window.print()">
-                    🖨️ Imprimir
-                </button>
             </div>
-
-            <div class="card" id="detalle-content"></div>
         </div>
     </div>
 
+    <div id="detalle-view" class="hidden">
+        </div>
+</div>
     <script>
             const TEJIDOS = [
             { nombre: "AALBORG 60-61-64", precio: 57.68, ancho: 300, composicion: "53% Pes 47% Li" },
