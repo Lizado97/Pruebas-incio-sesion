@@ -836,6 +836,10 @@ const PRECIOS_BARRAS = {
         document.addEventListener('DOMContentLoaded', function() {
             cargarSistemas();
             cargarDashboard();
+           const nuevoBtn = document.getElementById('nuevoPresupuestoBtn');
+    if (nuevoBtn) {
+        nuevoBtn.addEventListener('click', () => mostrarVista('nuevo'));
+    }
         });
 
         function cargarSistemas() {
