@@ -3,41 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - Canotex</title>
+    <title>Iniciar Sesión - Calculadora</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="firebase-config.js"></script>
     
     <style>
-        body { font-family: sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .login-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); width: 350px; text-align: center; }
-        h2 { color: #1e40af; margin-bottom: 20px; }
-        input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; border: none; border-radius: 4px; color: white; cursor: pointer; background-color: #3b82f6; }
-        button:hover { background-color: #2563eb; }
-        .error { color: #ef4444; margin-top: 10px; }
+        /* Estilos CSS modernos */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #141e30; /* Fondo oscuro */
+            background-image: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            color: #fff;
+        }
+
+        .login-container { 
+            background: rgba(255, 255, 255, 0.05); /* Fondo semitransparente (Glassmorphism) */
+            backdrop-filter: blur(10px); /* Efecto borroso */
+            border-radius: 20px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            padding: 40px; 
+            width: 380px; 
+            max-width: 90%;
+            text-align: center; 
+            transition: all 0.3s ease;
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-title h2 {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-left: 10px;
+        }
+
+        .logo-icon {
+            font-size: 30px;
+            /* Degradado de color para el icono */
+            background: linear-gradient(45deg, #00c6ff, #0072ff); 
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-message {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .welcome-message h3 {
+            font-size: 24px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .welcome-message p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 5px 0 0 0;
+        }
+        
+        /* Estilos de los campos de entrada con icono */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 12px 12px 12px 45px; /* Más padding a la izquierda para el icono */
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            background: rgba(255, 255, 255, 0.08); 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            color: #fff;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input:focus {
+            border-color: #00c6ff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.2);
+        }
+
+        /* Estilo del botón con degradado */
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 8px; 
+            color: white; 
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer; 
+            /* Degradado de color moderno */
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover { 
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .error { 
+            color: #ff4d4f; 
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>🔑 Iniciar Sesión</h2>
+        
+        <div class="logo-title">
+            <i class="fas fa-calculator logo-icon"></i>
+            <h2>CALCULADORA</h2>
+        </div>
+
+        <div class="welcome-message">
+            <h3>Bienvenido de Vuelta</h3>
+            <p>Inicia sesión para continuar con tu trabajo.</p>
+        </div>
+
         <form id="loginForm"> 
-            <input type="email" id="loginEmail" placeholder="Correo Electrónico" required>
-            <input type="password" id="loginPassword" placeholder="Contraseña" required>
-            <button type="submit">Entrar</button>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="loginEmail" placeholder="Correo Electrónico" required>
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="loginPassword" placeholder="Contraseña" required>
+            </div>
+            
+            <button type="submit">INICIAR SESIÓN</button>
             <p id="loginError" class="error"></p>
         </form>
-       
-    </div>
+        
+        </div>
 
     <script>
         // Si el usuario ya está logueado, redirigir a index.html inmediatamente
+        // Asegúrate de que la variable 'auth' esté definida en firebase-config.js
         auth.onAuthStateChanged(user => {
-             if (user) {
-                 window.location.href = "index.html";
-             }
-         });
+            if (user) {
+                window.location.href = "index.html";
+            }
+        });
 
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault(); 
@@ -45,13 +193,15 @@
             const password = document.getElementById('loginPassword').value;
             document.getElementById('loginError').textContent = '';
             
+            // Lógica de inicio de sesión con Firebase
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
                     // ÉXITO: Redirigir
                     window.location.href = "index.html"; 
                 })
                 .catch(error => {
-                    document.getElementById('loginError').textContent = "Usuario o contraseña incorrectos.";
+                    // FALLO: Mostrar mensaje de error
+                    document.getElementById('loginError').textContent = "Credenciales incorrectas. Por favor, inténtalo de nuevo.";
                     console.error("Login error:", error);
                 });
         });
