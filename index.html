@@ -254,6 +254,61 @@
             .stats {
                 grid-template-columns: 1fr;
             }
+           .tabla {
+        border: none; /* Quitamos bordes generales de la tabla en móviles */
+    }
+
+    .tabla thead {
+        /* Oculta los encabezados de la tabla, ya que no serán necesarios */
+        display: none;
+    }
+
+    .tabla,
+    .tabla tbody,
+    .tabla tr,
+    .tabla td {
+        display: block; /* Hacemos que la tabla y sus elementos se comporten como bloques */
+        width: 100%;
+    }
+
+    .tabla tr {
+        /* Estilo de tarjeta para cada fila */
+        margin-bottom: 1.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Sombra suave para parecer una card */
+        padding: 1rem;
+        background: white;
+    }
+
+    .tabla td {
+        border-bottom: 1px solid #e2e8f0;
+        text-align: right !important; /* Alinea el valor del dato a la derecha */
+        padding: 0.75rem 0;
+        position: relative;
+    }
+
+    .tabla td:last-child {
+        border-bottom: none; /* Elimina la línea divisoria del último dato */
+    }
+
+    .tabla td:before {
+        /* Crea la etiqueta (Número, Cliente, Total) con el atributo data-label */
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        top: 0.75rem;
+        font-weight: 600;
+        color: #475569; /* Color de texto secundario */
+    }
+
+    /* Ajuste para el botón de Acción */
+    .tabla td:nth-last-child(1) { /* Selecciona el último <td> (Acción) */
+        text-align: center !important;
+        padding-top: 1.5rem;
+    }
+
+           
         }
 
         /* Estilos de Impresión (se mantienen claros) */
@@ -304,25 +359,35 @@
         <div class="card">
             <h2>Presupuestos Recientes</h2>
             <div class="tabla-wrapper">
-                <table class="tabla" id="tabla-presupuestos">
-                    <thead>
-                        <tr>
-                            <th>Número</th>
-                            <th>Cliente</th>
-                            <th>Fecha</th>
-                            <th>Items</th>
-                            <th style="text-align: right;">Total</th>
-                            <th style="text-align: center;">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 3rem; color: rgba(255, 255, 255, 0.6);">
-                                No hay presupuestos. ¡Crea el primero!
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+             <table class="tabla" id="tabla-presupuestos">
+    <thead>
+        <tr>
+            <th>Número</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Items</th>
+            <th style="text-align: right;">Total</th>
+            <th style="text-align: center;">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-label="Número">001</td>
+            <td data-label="Cliente">Juan Pérez</td>
+            <td data-label="Fecha">15/04/2025</td>
+            <td data-label="Items">2</td>
+            <td data-label="Total" style="text-align: right;">1,250.00€</td>
+            <td data-label="Acción" style="text-align: center;">
+                <button class="btn-primary" onclick="verDetalle('001')" style="padding: 0.5rem 1rem;">Ver</button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" style="text-align: center; padding: 3rem; color: #64748b;">
+                No hay presupuestos. ¡Crea el primero!
+            </td>
+        </tr>
+    </tbody>
+</table>
             </div>
         </div>
     </div>
